@@ -6,8 +6,8 @@ PYTHON_VERSION = python3.10
 venv:
 	# Check if the virtual environment exists before creating it
 	@if [ ! -d "$(VENV_DIR)" ]; then \
-		echo "Creating a new virtual environment with $(PYTHON_VERSION)"; \
-		$(PYTHON_VERSION) -m venv $(VENV_DIR); \
+		echo "Creating a new virtual environment with $(PYTHON_VERSION) and system site packages"; \
+		$(PYTHON_VERSION) -m venv --system-site-packages $(VENV_DIR); \
 	else \
 		echo "Virtual environment already exists"; \
 	fi
