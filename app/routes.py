@@ -28,7 +28,7 @@ def process_data():
         response = {
             'quality': score_result['quality'],
             'recommendations': score_result['recommendations'],
-            'nuanced_feedback': score_result['nuanced_feedback'],
+            # 'nuanced_feedback': score_result['nuanced_feedback'],
             'final_score': score_result['final_score']
         }
 
