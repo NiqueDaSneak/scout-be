@@ -95,17 +95,17 @@ def generate_score(text, categories, data_type):
     logging.info(f"Calculated final score: {final_score}")
 
     # Pass the required parameters to the LLM feedback function
-    nuanced_feedback = generate_nuanced_feedback(
-        readability_score, 
-        keyword_density_score, 
-        sentiment_score, 
-        categories, 
-        text
-    )
+    # nuanced_feedback = generate_nuanced_feedback(
+    #     readability_score, 
+    #     keyword_density_score, 
+    #     sentiment_score, 
+    #     categories, 
+    #     text
+    # )
 
     return {
         'quality': 'high' if final_score > 2.5 else 'medium' if final_score > 1.5 else 'low',
         'recommendations': generate_recommendations(readability_score, length_score, keyword_density_score, sentiment_score),
-        'nuanced_feedback': nuanced_feedback,
+        # 'nuanced_feedback': nuanced_feedback,
         'final_score': final_score
     }
