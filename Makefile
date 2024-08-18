@@ -1,17 +1,16 @@
 VENV_DIR = venv_api
+PYTHON_VERSION = python3.12
 
 .PHONY: venv install run
 
 venv:
-	# Deactivate any existing virtual environment
-	@echo "Deactivating any existing virtual environment"
-	@if [ -n "$$VIRTUAL_ENV" ]; then deactivate; fi
-	# Remove existing virtual environment if it exists
-	@echo "Removing existing virtual environment if it exists"
-	rm -rf $(VENV_DIR)
-	# Create a new virtual environment
-	@echo "Creating a new virtual environment"
-	python3 -m venv $(VENV_DIR)
+	# Check if the virtual environment exists before creating it
+	@if [ ! -d "$(VENV_DIR)" ]; then \
+		echo "Creating a new virtual environment with $(PYTHON_VERSION)"; \
+		$(PYTHON_VERSION) -m venv $(VENV_DIR); \
+	else \
+		echo "Virtual environment already exists"; \
+	fi
 
 install: venv
 	# Activate the virtual environment and install dependencies
