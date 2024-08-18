@@ -2,17 +2,18 @@ import logging
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from transformers import pipeline
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-
-# Initialize sentiment analyzers
-logging.info("Initializing Vader Sentiment Analyzer")
-sentiment_analyzer = SentimentIntensityAnalyzer()
-
-logging.info("Initializing BERT Sentiment Analyzer")
-bert_sentiment_analyzer = pipeline('sentiment-analysis')
 
 def get_sentiment_score(text):
+    # Configure logging
+    logging.basicConfig(level=logging.INFO)
+
+    # Initialize sentiment analyzers
+    logging.info("Initializing Vader Sentiment Analyzer")
+    sentiment_analyzer = SentimentIntensityAnalyzer()
+
+    logging.info("Initializing BERT Sentiment Analyzer")
+    bert_sentiment_analyzer = pipeline('sentiment-analysis')
+
     logging.info(f"Analyzing sentiment for text: {text[:100]}...")  # Log the first 100 characters for context
     
     # Vader sentiment analysis
