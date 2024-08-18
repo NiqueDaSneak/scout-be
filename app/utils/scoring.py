@@ -107,7 +107,7 @@ def generate_score(text, categories, data_type):
 
     return {
         'quality': 'high' if final_score > 2.5 else 'medium' if final_score > 1.5 else 'low',
-        'recommendations': generate_recommendations(readability_score, length_score, keyword_density_score, 0),
+        'recommendations': generate_recommendations(readability_score, length_score, keyword_density_score, 0.5),
         # 'nuanced_feedback': nuanced_feedback,
         'final_score': final_score
     }
