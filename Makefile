@@ -1,5 +1,5 @@
 VENV_DIR = venv_api
-PYTHON_VERSION = python3.12
+PYTHON_VERSION = python3.10
 
 .PHONY: venv install run
 
