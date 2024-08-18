@@ -88,10 +88,12 @@ def generate_score(text, categories, data_type):
     logging.info(f"Calculated length score: {length_score}")
 
     keyword_density_score = calculate_keyword_density(text, categories)
-    sentiment_score = get_sentiment_score(text)
-    logging.info(f"Calculated keyword density score: {keyword_density_score}, Sentiment score: {sentiment_score}")
+    # sentiment_score = get_sentiment_score(text)
+    # logging.info(f"Calculated keyword density score: {keyword_density_score}, Sentiment score: {sentiment_score}")
+    logging.info(f"Calculated keyword density score: {keyword_density_score}")
 
-    final_score = (readability_score / 100) + length_score + keyword_density_score + sentiment_score
+    # final_score = (readability_score / 100) + length_score + keyword_density_score + sentiment_score
+    final_score = (readability_score / 100) + length_score + keyword_density_score 
     logging.info(f"Calculated final score: {final_score}")
 
     # Pass the required parameters to the LLM feedback function
@@ -105,7 +107,7 @@ def generate_score(text, categories, data_type):
 
     return {
         'quality': 'high' if final_score > 2.5 else 'medium' if final_score > 1.5 else 'low',
-        'recommendations': generate_recommendations(readability_score, length_score, keyword_density_score, sentiment_score),
+        'recommendations': generate_recommendations(readability_score, length_score, keyword_density_score, 0),
         # 'nuanced_feedback': nuanced_feedback,
         'final_score': final_score
     }
