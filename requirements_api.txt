@@ -1,0 +1,10 @@
+Flask
+Flask-Cors
+textstat
+vaderSentiment
+transformers
+torch
+tf-keras
+spacy 
+openai
+requests
