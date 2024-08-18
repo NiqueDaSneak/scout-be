@@ -1,3 +1,4 @@
+import logging
 import os
 import textstat
 import torch
@@ -5,19 +6,26 @@ from transformers import pipeline, GPT2Tokenizer, GPT2LMHeadModel
 from .sentiment import get_sentiment_score
 from .text_processing import calculate_keyword_density, generate_recommendations, get_synonyms
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
 # Load the tokenizer and model
+logging.info("Loading GPT-2 model and tokenizer.")
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 model = GPT2LMHeadModel.from_pretrained("gpt2")
 
 # Define the device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
+logging.info(f"Model loaded and moved to device: {device}")
 
 def generate_nuanced_feedback(readability_score, keyword_density_score, sentiment_score, categories, text):
-    print(f"all inputs: {readability_score}, {keyword_density_score}, {sentiment_score}, {categories}, {text}")
+    logging.info(f"Generating nuanced feedback for text: {text[:100]}...")
+    logging.info(f"Input scores - Readability: {readability_score}, Keyword Density: {keyword_density_score}, Sentiment: {sentiment_score}, Categories: {categories}")
+
     # Expand categories with synonyms
     expanded_categories = categories + [syn for category in categories for syn in get_synonyms(category)]
-    print(f"expanded_categories: {expanded_categories}")
+    logging.info(f"Expanded categories: {expanded_categories}")
 
     prompt = (
         "You are a marketing consultant specializing in crowdfunding campaigns. "
@@ -33,6 +41,7 @@ def generate_nuanced_feedback(readability_score, keyword_density_score, sentimen
 
     inputs = tokenizer(prompt, return_tensors='pt', truncation=True, max_length=512)
     inputs = inputs.to(device)
+    logging.info("Generated inputs for the GPT-2 model.")
 
     # Generate the attention mask
     attention_mask = inputs['attention_mask'].to(device)
@@ -51,19 +60,23 @@ def generate_nuanced_feedback(readability_score, keyword_density_score, sentimen
 
     # Decode and extract the recommendations
     generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    
+    logging.info("Generated text from the model.")
+
     # Find the recommendations part of the text
     recommendations_start = generated_text.find("1.")
     recommendations = generated_text[recommendations_start:].strip() if recommendations_start != -1 else generated_text.strip()
 
     # Clean up the text
     recommendations = recommendations.replace("\n", " ").replace("2.", "\n2.").replace("3.", "\n3.")
+    logging.info(f"Generated recommendations: {recommendations}")
     return recommendations
 
 def generate_score(text, categories, data_type):
+    logging.info(f"Generating score for text of length {len(text)} with dataType: {data_type}")
     readability_score = textstat.flesch_reading_ease(text)
     flesch_kincaid_grade = textstat.flesch_kincaid_grade(text)
-    
+    logging.info(f"Calculated readability score: {readability_score}, Flesch-Kincaid grade: {flesch_kincaid_grade}")
+
     # Adjust length_score based on data_type
     if data_type == 'heading':
         length_score = 1 if 50 <= len(text) <= 60 else 0
@@ -72,11 +85,15 @@ def generate_score(text, categories, data_type):
     else:  # Assume 'story' or other longer texts
         length_score = 1 if len(text) > 160 else 0
 
+    logging.info(f"Calculated length score: {length_score}")
+
     keyword_density_score = calculate_keyword_density(text, categories)
     sentiment_score = get_sentiment_score(text)
+    logging.info(f"Calculated keyword density score: {keyword_density_score}, Sentiment score: {sentiment_score}")
 
     final_score = (readability_score / 100) + length_score + keyword_density_score + sentiment_score
-    
+    logging.info(f"Calculated final score: {final_score}")
+
     # Pass the required parameters to the LLM feedback function
     nuanced_feedback = generate_nuanced_feedback(
         readability_score, 
